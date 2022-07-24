@@ -3,18 +3,16 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to cemc-ecflow-tutorial's documentation!
+CEMC ecFlow 教程
 ================================================
+
+本教程为 CEMC 2022 培训建立。
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :hidden:
+   :caption: 开始使用
 
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   started/introduction
+   started/prepare
+   started/start-ecflow-server
