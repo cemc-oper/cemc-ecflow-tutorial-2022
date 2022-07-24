@@ -16,3 +16,7 @@ CEMC ecFlow 教程
    started/introduction
    started/prepare
    started/start-ecflow-server
+   started/create-a-suite
+
+
+
