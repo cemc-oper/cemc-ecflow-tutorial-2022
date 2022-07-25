@@ -6,7 +6,7 @@
 CEMC ecFlow 教程
 ================================================
 
-本教程为 CEMC 2022 培训建立。
+本教程用于 CEMC 2022 培训的 ecFlow 上机实习环节。
 
 .. toctree::
    :maxdepth: 2
@@ -24,10 +24,17 @@ CEMC ecFlow 教程
 .. toctree::
    :maxdepth: 2
    :hidden:
-   :caption: 进一步
+   :caption: 构建流程
 
    future/add-another-task
    future/add-family
    future/add-more-tasks
    future/use-script-to-ignore-task
    future/create-parallel-task
+
+.. toctree::
+   :maxdepth: 2
+   :hidden:
+   :caption: 进阶
+
+   advance/create-model-task
