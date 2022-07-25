@@ -21,4 +21,9 @@ CEMC ecFlow 教程
    started/create-includes
    started/create-task-script
 
+.. toctree::
+   :maxdepth: 2
+   :hidden:
+   :caption: 进一步
 
+   future/add-another-task
