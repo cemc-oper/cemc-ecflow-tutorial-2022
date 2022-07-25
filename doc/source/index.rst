@@ -38,3 +38,4 @@ CEMC ecFlow 教程
    :caption: 进阶
 
    advance/create-model-task
+   advance/create-post-tasks

@@ -1,20 +1,19 @@
-添加模式积分任务
-================
+添加产品后处理任务
+===================
 
-从本节起，将介绍 ecFlow 的一些进阶功能。
-我们将为 CMA-TYM 创建模式积分任务，并通过一个串行任务监控模式积分进度。
-同时我们还将运行后处理和产品制作程序，生成发布在天气业务内网上的台风预报图形产品。
+模式生成的二进制数据不便于分发和展示，我们通常要对模式原始数据结果进行后处理，并生成数据和图片产品。
 
-本节将创建模式积分任务和积分进度监控任务。
+本节将添加后处理任务和图片产品制作任务，并介绍如何在触发器中使用标尺。
+这两个任务仅在在有台风时运行。
 
 更新工作流定义
---------------
+----------------
 
 更新 ``${TUTORIAL_HOME}/def`` 中的工作流定义文件 **cma_tym.py**：
 
 .. code-block:: py
     :linenos:
-    :emphasize-lines: 94-102
+    :emphasize-lines: 104-130
 
     import os
 
@@ -119,159 +118,142 @@
                 tk_grapes_monitor.add_trigger("./grapes:clean_ready == set or ./grapes == complete")
                 tk_grapes_monitor.add_meter("forecastHours", -1, 120)
 
+        with suite.add_family("post") as fm_post:
+            last_hour = None
+            for hour in range(0, 120 + 1, 1):
+                with fm_post.add_task("post_{hour:03}".format(hour=hour)) as tk_hour:
+                    trigger = "../model/grapes_monitor:forecastHours >= {hour} or ../model/grapes_monitor == complete".format(hour=hour)
+                    if last_hour is not None:
+                        trigger = "./post_{last_hour:03} == complete and ({trigger})".format(last_hour=last_hour, trigger=trigger)
+                    tk_hour.add_trigger(trigger)
+                    tk_hour.add_variable(slurm_serial("serial"))
+                    tk_hour.add_variable("FFF", "{hour:03}".format(hour=hour))
+                    tk_hour.add_variable(
+                        "ECF_SCRIPT_CMD",
+                        "cat {def_path}/ecffiles/post.ecf".format(def_path=def_path)
+                    )
+                last_hour = hour
+
+        with suite.add_family("prods") as fm_prods:
+            with fm_prods.add_family("plot") as fm_plot:
+                for hour in range(0, 120 + 1, 1):
+                    with fm_plot.add_task("plot_{hour:03}".format(hour=hour)) as tk_hour:
+                        tk_hour.add_trigger("../../post/post_{hour:03} == complete".format(hour=hour))
+                        tk_hour.add_variable(slurm_serial("serial"))
+                        tk_hour.add_variable("FFF", "{hour:03}".format(hour=hour))
+                        tk_hour.add_variable(
+                            "ECF_SCRIPT_CMD",
+                            "cat {def_path}/ecffiles/plot.ecf".format(def_path=def_path)
+                        )
+
+
     print(defs)
     def_output_path = str(os.path.join(def_path, "cma_tym.def"))
     defs.save_as_defs(def_output_path)
 
 新增代码解析：
 
-- 94-95 行添加 model 节点，并设置触发器。
-- 96-98 行添加模式积分任务 grapes，使用 128 节点，设置事件 clean_ready。
-- 100-102 行添加模式积分进度监控任务 grapes_monitor，由 grapes 的 clearn_ready 事件触发，并设置标尺 forecastHours。
+- 104-118 行创建 post 节点，逐小时创建 post 后处理任务，任务脚本是 **post.ecf**
+    - 每个时效的 post 任务需要模式输出对应时效的输出数据，grapes_monitor 中 forecastHours 指示当前模式积分进度。
+      当使用 meter 作为触发器时，使用 ``==`` 作为判断条件可能会因为 meter 变化太快而错过某值，导致触发失败。
+      所以我们一般使用 ``>=`` 作为判断条件，同时加上任务运行结束的条件，已确保在任何条件下该任务都会被正确触发。
+    - post 任务需要串行执行，所以从时效 001 开始，每个 post 任务都将前一个时效 post 任务完成作为触发条件之一。
+- 120-130 行创建 prods 节点和 plot 节点，逐小时创建 plot 绘图任务，任务脚本是 **plot.ecf**
 
-挂起 cma_tym 节点，更新 ecFlow 上的工作流：
+创建任务脚本
+---------------
 
-.. code-block:: bash
-
-    cd ${TUTORIAL_HOME}/def/ecffiles
-    python cma_tym.py
-    ecflow_client --port 43083 --replace /cma_tym cma_tym.def
-
-查看 ecFlowUI，将已跑过的任务设为 complete 状态；
-
-.. image:: image/ecflow-ui-model-grapes.png
-
-创建模式积分任务脚本
------------------------
-
-在 ``${TUTORIAL_HOME}/def/ecffiles`` 中创建 ecf 脚本 **grapes.ecf**：
+在 ``${TUTORIAL_HOME}/def/ecffiles`` 目录中创建 ecf 脚本 **post.ecf**：
 
 .. code-block:: bash
+    :emphasize-lines: 7
 
     #!/bin/ksh
-    %include <slurm_parallel.h>
-    #SBATCH -t 00:90:00
+    %include <slurm_serial.h>
     %include <head.h>
     %include <configure.h>
     #--------------------------------------
 
-    run_dir=${CYCLE_RUN_DIR}
+    %include <check_message.h>
+
+    #===========================#
+    run_dir=${CYCLE_RUN_BASE_DIR}
+    forecast_hour=%FFF%
     cd $run_dir
     #===========================#
-    rm -f namelist.input
-    rm -f postvar${START_TIME}* post.ctl_${START_TIME}*
-    rm -f sfcvar${START_TIME}* sfc.ctl_${START_TIME}*
-    rm -f modelvar${START_TIME}* model.ctl_${START_TIME}*
+    dobckg=0
+    dopost=1
+    doplot=0
+    dodata=0
+    upload=0
 
-    ecflow_client --event=clean_ready
-
-    echo "[INFO] use cma-ncep bckg"
-    echo "[INFO]  -- use grapes.exe"
-    grapes_exe=${PROGRAM_BIN_DIR}/grapes.exe
-
-    ${PROGRAM_SCRIPT_DIR}/do_grapesd01.csh \
-      ${START_TIME} ${END_TIME} ${START_TIME} ${GMF_TINV} ${FORECAST_LENGTH} ${RMF_TINV}
-
-    if [ -e qcqr_gcas_${START_TIME}00 ];then
-      cat namelist.input | sed -e "s#warm_start .*=#warm_start = .T., ! #" | sed -e "s#do_cld .*=#do_cld = .T., ! #" > namelist.tmp
-      mv namelist.tmp namelist.input
-    fi
-
-    #====================================
-    # ulimit -s unlimited
-
-    module load compiler/intel/composer_xe_2017.2.174
-    module load mpi/intelmpi/2017.2.174
-
-    #====================================
-    unset I_MPI_PMI_LIBRARY
-
-    ulimit -s unlimited
-    ulimit -c unlimited
-
-    srun hostname|sort|uniq|tee grapes_$SLURM_JOB_ID.hostname
-
-    nodenum=` srun hostname|sort|uniq|wc -l `
-    mpirun_perhost=30
-    mpirun_np=$(expr ${nodenum} \* ${mpirun_perhost})
-    mpirun -np ${mpirun_np} -f grapes_$SLURM_JOB_ID.hostname -perhost ${mpirun_perhost} ${grapes_exe}
-
-    rm -f xb${START_TIME}006.dat
-    rm -rf grapes_$SLURM_JOB_ID.hostname
+      ${PROGRAM_SCRIPT_DIR}/TcPro.pl \
+        -B $dobckg \
+        -P $dopost \
+        -G $doplot \
+        -M $dodata \
+        -U $upload \
+        -S ${COMPONENT_PROJECT_BASE} \
+        -D ${CYCLE_RUN_BASE_DIR} \
+        -f ${FORECAST_LENGTH} \
+        -i $RMF_TINV \
+        -I $GMF_TINV \
+        -b ${forecast_hour} \
+        -e ${forecast_hour} \
+        ${START_TIME}
 
     #---------------------------------------
+
     %include <tail.h>
 
 
-创建积分进度监控任务脚本
-------------------------------------
+注意标亮行引入头文件 **check_message.h**，表示该任务仅在有台风时运行。
 
-积分监控任务会逐小时检查 run 目录下对应的文件是否生成，将生成的二进制文件和 CTL 文本文件拷贝到 dat 目录中，并修改标尺 forecastHours 值，用于触发后续任务。
-
-在 ``${TUTORIAL_HOME}/def/ecffiles`` 中创建 ecf 脚本 **grapes_monitor.ecf**：
+在 ``${TUTORIAL_HOME}/def/ecffiles`` 目录中创建 ecf 脚本 **plot.ecf**：
 
 .. code-block:: bash
+    :emphasize-lines: 7
 
     #!/bin/ksh
+    %include <slurm_serial.h>
     %include <head.h>
     %include <configure.h>
     #--------------------------------------
 
-    run_dir=${CYCLE_RUN_DIR}
+    %include <check_message.h>
+
+    #===========================#
+    run_dir=${CYCLE_RUN_BASE_DIR}
+    forecast_hour=%FFF%
     cd $run_dir
+    #===========================#
+    dobckg=0
+    dopost=0
+    doplot=1
+    dodata=0
+    upload=0
 
-    forecast_length=${FORECAST_LENGTH}
+    # upload=10 plot
+    # upload=20 micaps
 
-    # copy post.ctl
-    ctlExist=".false."
-    while [ $ctlExist = ".false." ]
-    do
-      if [ -s post.ctl_${START_TIME} -a -s sfc.ctl_${START_TIME} ]; then
-        chmod 644 post.ctl_${START_TIME} sfc.ctl_${START_TIME}
-        cp post.ctl_${START_TIME} sfc.ctl_${START_TIME} ${CYCLE_DAT_DIR}/
-
-        ctlExist=".true."
-      else
-        sleep 5
-      fi
-    done
-
-    # copy postvar, sfcvar and sfc.ctl
-    typeset -Z3 FFF
-    for fhour in `seq 0 ${forecast_length} `
-    do
-      FFF=$fhour
-      fileExist=".false."
-      while [ $fileExist = ".false." ]
-      do
-        cd ${run_dir}
-        # copy postvar and sfcvar
-        if [ -s postvar${START_TIME}${FFF}00 ] && [ -s sfcvar${START_TIME}${FFF}00 ] && [ -s sfc.ctl_${START_TIME}${FFF}00 ] && [ -s model.ctl_${START_TIME}${FFF}00 ]; then
-          sleep 2
-          chmod 644 postvar${START_TIME}${FFF}00 sfcvar${START_TIME}${FFF}00 sfc.ctl_${START_TIME}${FFF}00 modelvar${START_TIME}${FFF}00 model.ctl_${START_TIME}${FFF}00
-
-          cd ${CYCLE_DAT_DIR}
-          cp -sf ${run_dir}/model.ctl_${START_TIME}${FFF}00 .
-          cp -sf ${run_dir}/sfc.ctl_${START_TIME}${FFF}00 .
-          ln -sf ${run_dir}/modelvar${START_TIME}${FFF}00  .
-          ln -sf ${run_dir}/sfcvar${START_TIME}${FFF}00  .
-          ln -sf ${run_dir}/postvar${START_TIME}${FFF}00 .
-
-          ecflow_client --meter forecastHours ${fhour}
-          fileExist=".true."
-        else
-          sleep 2
-        fi
-      done
-    done
+      ${PROGRAM_SCRIPT_DIR}/TcPro.pl \
+        -B $dobckg \
+        -P $dopost \
+        -G $doplot \
+        -M $dodata \
+        -U $upload \
+        -S ${COMPONENT_PROJECT_BASE} \
+        -D ${CYCLE_RUN_BASE_DIR} \
+        -f ${FORECAST_LENGTH} \
+        -i $RMF_TINV \
+        -I $GMF_TINV \
+        -b ${forecast_hour} \
+        -e ${forecast_hour} \
+        -u 0 \
+        -w ${forecast_hour} \
+        ${START_TIME}
 
     #---------------------------------------
+
     %include <tail.h>
 
-运行任务
----------
-
-.. note::
-
-    模式积分任务占用资源较多，排队和运行时间较长。
-    为方便调试，等全部流程建好后我们再进行运行任务。
