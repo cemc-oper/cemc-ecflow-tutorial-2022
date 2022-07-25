@@ -29,7 +29,8 @@
         return variables
 
 
-    tutorial_base = "/g8/JOB_TMP/wangdp/tutorial/ecflow"
+    current_path = os.path.dirname(__file__)
+    tutorial_base = os.path.abspath(os.path.join(current_path, "../"))
     def_path = os.path.join(tutorial_base, "def")
     ecfout_path = os.path.join(tutorial_base, "ecfout")
     program_base_dir = os.path.join(tutorial_base, "program/grapes-tym-program")
