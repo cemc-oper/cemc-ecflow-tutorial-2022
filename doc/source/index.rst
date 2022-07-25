@@ -39,3 +39,4 @@ CEMC ecFlow 教程
 
    advance/create-model-task
    advance/create-post-tasks
+   advance/create-archive-task
