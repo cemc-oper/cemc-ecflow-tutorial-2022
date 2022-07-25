@@ -41,7 +41,7 @@
         suite.add_variable("USE_GFS", 12)
 
         suite.add_variable("ECF_DATE", "20220704")
-        suite.add_variable("HH", 00)
+        suite.add_variable("HH", "00")
 
         with suite.add_task("copy_dir") as tk_copy_dir:
             pass
@@ -83,7 +83,7 @@
       edit RMF_TINV '3'
       edit USE_GFS '12'
       edit ECF_DATE '20220704'
-      edit HH '0'
+      edit HH '00'
       task copy_dir
     endsuite
     # enddef

@@ -18,5 +18,7 @@ CEMC ecFlow 教程
    started/start-ecflow-server
    started/create-a-suite
    started/load-the-suite
+   started/create-includes
+   started/create-task-script
 
 
