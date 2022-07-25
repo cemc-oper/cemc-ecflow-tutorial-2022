@@ -8,6 +8,45 @@ CEMC ecFlow 教程
 
 本教程用于 CEMC 2022 培训的 ecFlow 上机实习环节。
 
+本教程以 **简化版** CMA-TYM 为例说明如何使用 ecFlow 搭建并运行数值预报模式流程。
+
+为什么选择 CMA-TYM 模式？
+--------------------------
+
+目前 CEMC 有 5 个主要的数值天气预报模式系统使用 ecFlow 进行维护：
+
+- CMA-GFS
+- CMA-MESO
+- CMA-TYM
+- CMA-GEPS
+- CMA-REPS
+
+因为本轮培训有专题介绍 CMA-GFS 和 CMA-MESO 的运行脚本，ecFlow 实战环节不再重复介绍。
+集合预报系统 CMA-GEPS 和 CMA-REPS 都有众多集合成员，系统流程比较复杂，不适合初学者。
+
+CMA-TYM 模式流程清晰明了，包含数值天气预报模式系统常见的几类模块：
+
+- 观测资料获取：从观测资料数据库检索台风报文
+- 资料预处理：处理 NCEP GFS 数据
+- 同化：CMA-TYM 本身没有同化模块，可以将云分析看成一种同化
+- 模式积分：grapes.exe 程序
+- 后处理：处理模式输出的二进制数据，生成制作产品需要的数据
+- 产品制作：生成图片产品
+
+同时，CMA-TYM 模式的大部分模块都进行了封装，脚本比较简单，非常适合 ecFlow 的初学者。
+
+因此，本次培训选择 CMA-TYM 模式作为示例讲解如何使用 ecFlow 搭建模式流程。
+这也是第一次尝试使用实际系统来介绍 ecFlow。
+
+教程内容
+---------
+
+本教程由三部分组成：
+
+- 开始使用：介绍如何启动 ecFlow 服务，并创建只有一个任务的工作流。
+- 构建流程：添加更多任务，创建从报文获取到云分析的多个任务，介绍如何使用触发器设定运行流程，以及如何将作业提交到 Slurm 队列中。
+- 进阶：添加模式积分、产品后处理等任务，形成一个完整的 CMA-TYM 工作流并运行。
+
 .. toctree::
    :maxdepth: 2
    :hidden:
@@ -40,3 +79,4 @@ CEMC ecFlow 教程
    advance/create-model-task
    advance/create-post-tasks
    advance/create-archive-task
+   advance/run-the-flow
