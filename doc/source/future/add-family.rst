@@ -195,6 +195,11 @@
         cp namelist.grib ${dataproc_dir}
     fi
 
+    if [ ${TTT} = "000" ]; then
+      cd ${bckg_dir}
+      cp ModelName_gfs.txt ModelName.txt
+    fi
+
     #---------------------------------------
     %include <tail.h>
 

@@ -156,6 +156,8 @@ configure.h 用于设置模式参数和目录。
 
     GEOGDIR=/g1/COMMONDATA/static/rfs/geog/v3
 
+    export PATH=${PROGRAM_BIN_DIR}:${PROGRAM_SCRIPT_DIR}:${PATH}
+
     #------------
     # END: configure.h
     #------------
