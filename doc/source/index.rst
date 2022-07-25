@@ -29,3 +29,4 @@ CEMC ecFlow 教程
    future/add-another-task
    future/add-family
    future/add-more-tasks
+   future/use-script-to-ignore-task.rst
