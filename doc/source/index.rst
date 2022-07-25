@@ -27,3 +27,4 @@ CEMC ecFlow 教程
    :caption: 进一步
 
    future/add-another-task
+   future/add-family
