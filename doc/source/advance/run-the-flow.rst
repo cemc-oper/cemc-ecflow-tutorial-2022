@@ -50,3 +50,18 @@
 
 所有模块运行完成后，cma_tym 节点下的所有节点都是 complete 状态。
 
+.. image:: image/ecflow-ui-run-suite-complete.png
+
+查看图片产品
+------------
+
+查看路径预报图片：
+
+.. code-block:: bash
+
+    cd ${TUTORIAL_HOME}/workdir/2022070400/Prods/2022070400/tcweb
+    display SEVP_NMC_TCBU_STYM_EME_ACWP_L89_PF_20220704000012000.JPG&
+
+.. image:: image/display-tctrack.png
+
+至此，我们已成功建立并运行 CMA-TYM 模式预报流程。
