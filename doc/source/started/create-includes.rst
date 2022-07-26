@@ -15,13 +15,13 @@
 head.h
 -----------
 
-head.h 放在 ecf 脚本开头，完成如下任务：
+**head.h** 放在 ecf 脚本开头，完成如下任务：
 
-- 准备与 ecFlow 服务通信的环境
-- 定义脚本错误处理函数。当错误发生，通知服务该任务进入 aborted 状态
+- 准备与 ecFlow 服务通信的环境变量
+- 定义脚本错误处理函数。当错误发生，通知服务该任务进入 *aborted* 状态
 - 使用 ``ecflow_client`` 命令通知服务该任务已经开始
 
-在 ``${TUTORIAL_HOME}/def`` 中创建头文件 **head.h**：
+在 ``${TUTORIAL_HOME}/def/include`` 中创建头文件 **head.h**：
 
 .. code-block:: bash
 
@@ -81,9 +81,9 @@ head.h 放在 ecf 脚本开头，完成如下任务：
 tail.h
 -----------
 
-tail.h 放在 ecf 脚本结尾，通知服务该任务已经完成。
+**tail.h** 放在 ecf 脚本结尾，通知服务该任务已经完成。
 
-在 ``${TUTORIAL_HOME}/def`` 中创建头文件 **tail.h**：
+在 ``${TUTORIAL_HOME}/def/include`` 中创建头文件 **tail.h**：
 
 .. code-block::
 
@@ -100,9 +100,9 @@ tail.h 放在 ecf 脚本结尾，通知服务该任务已经完成。
 configure.h
 ----------------
 
-configure.h 用于设置模式参数和目录。
+**configure.h** 用于设置模式参数和目录。
 
-在 ``${TUTORIAL_HOME}/def`` 中创建头文件 **configure.h**：
+在 ``${TUTORIAL_HOME}/def/include`` 中创建头文件 **configure.h**：
 
 .. code-block:: bash
 

@@ -14,7 +14,7 @@
 
 .. code-block:: py
     :linenos:
-    :emphasize-lines: 94-102
+    :emphasize-lines: 95-103
 
     import os
 
@@ -126,9 +126,9 @@
 
 新增代码解析：
 
-- 94-95 行添加 model 节点，并设置触发器。
-- 96-98 行添加模式积分任务 grapes，使用 128 节点，设置事件 clean_ready。
-- 100-102 行添加模式积分进度监控任务 grapes_monitor，由 grapes 的 clearn_ready 事件触发，并设置标尺 forecastHours。
+- 95-96 行添加 model 节点，并设置触发器。
+- 97-99 行添加模式积分任务 grapes，使用 128 节点，设置事件 clean_ready。
+- 101-103 行添加模式积分进度监控任务 grapes_monitor，由 grapes 的 clearn_ready 事件触发，并设置标尺 forecastHours。
 
 挂起 cma_tym 节点，更新 ecFlow 上的工作流：
 
@@ -275,4 +275,4 @@
 .. note::
 
     模式积分任务占用资源较多，排队和运行时间较长。
-    为方便调试，等全部流程建好后我们再进行运行任务。
+    为方便调试，等全部流程建好后我们再运行任务。

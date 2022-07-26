@@ -22,7 +22,7 @@
 
     ssh wangdp@10.40.140.20
 
-查看 ecflow 版本：
+查看 ecFlow 版本：
 
 .. code-block:: bash
 

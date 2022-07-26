@@ -1,7 +1,7 @@
 加载工作流
 ==========
 
-下一步是让 ecFlow 服务知道你的工作流，或者称为加载 suite 定义文件。
+下一步是让 ecFlow 服务知道我们的工作流，或者称为加载 suite 定义文件。
 
 加载 suite
 ------------
@@ -10,8 +10,8 @@
 
 .. note::
 
-    ecflow_client 命令需要指定 ecFlow 服务所在的主机和端口号。
-    本例中在 ecflow 服务所在节点运行 ecflow_client，所以只需要指定端口号。
+    ``ecflow_client`` 命令需要指定 ecFlow 服务所在的主机和端口号。
+    本教程在 ecFlow 服务所在节点运行 ``ecflow_client``，所以只需要指定端口号。
 
 .. code-block:: bash
 
@@ -29,7 +29,7 @@
 
 .. image:: image/ecflow-ui-load-suite.png
 
-右键点击 cma_tym，单击 beigin，可以启动 cma_tym 工作流。
+右键点击 cma_tym，单击 begin，可以启动 cma_tym 工作流。
 因为我们没有设置任何触发器，所以 copy_dir 任务会立刻执行。
 但因为我们还没编写任务脚本，ecFlow 会报错，ecFlowUI 会弹出一个窗口显示出错任务列表。
 出错的任务处于 aborted 状态。

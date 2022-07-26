@@ -1,7 +1,7 @@
 添加更多任务
 =============
 
-下面继续添加两个数据预处理任务。
+下面继续添加两个数据预处理任务：
 
 - extgmf 任务解码全球模式资料，生成二进制文件
 - pregmf 任务对解码后的全球模式资料进行预处理
@@ -13,7 +13,7 @@
 
 .. code-block::
     :linenos:
-    :emphasize-lines: 63-69
+    :emphasize-lines: 64-70
 
     import os
 
@@ -91,7 +91,7 @@
     def_output_path = str(os.path.join(def_path, "cma_tym.def"))
     defs.save_as_defs(def_output_path)
 
-64-69 行添加两个任务 extgmf 和 pregmf。
+65-70 行添加两个任务 extgmf 和 pregmf。
 
 更新 ecFlow 上的工作流：
 

@@ -25,7 +25,7 @@ ecFlow 服务需要监听登录节点上的一个端口，启动 ecFlow 前需�
 
 ecFlow 提供 ``ecflow_start.sh`` 脚本用于启动 ecFlow 服务。
 
-查看 ecflow_start.sh 脚本帮助信息：
+查看 **ecflow_start.sh** 脚本的帮助信息：
 
 .. code-block:: shell
 
@@ -87,7 +87,8 @@ ecFlow 提供 ``ecflow_start.sh`` 脚本用于启动 ecFlow 服务。
 
 .. note::
 
-    如果出现错误信息，可能因为 ecFlow 已经启动或端口号已被占用。如果端口号已被占用，请选择一个新的端口号。
+    如果出现错误信息，可能因为 ecFlow 已经启动或端口号已被占用。
+    如果端口号已被占用，请选择一个新的端口号。
 
 使用 ecFlowUI 检查 ecFlow 服务
 --------------------------------
@@ -98,7 +99,7 @@ ecFlow 提供 ``ecflow_start.sh`` 脚本用于启动 ecFlow 服务。
 
 .. code-block:: shell
 
-    ecflow_ui&
+    ecflow_ui &
 
 点击 Servers/Manage servers... 菜单，在弹出窗口中点击 Add server 按钮，添加刚启动的 ecFlow 服务：
 

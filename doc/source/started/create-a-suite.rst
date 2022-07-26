@@ -13,6 +13,7 @@
     cd ${TUTORIAL_HOME}/def
 
 .. code-block:: py
+    :linenos:
 
     import os
 
@@ -53,10 +54,10 @@
 
 上述脚本主要完成如下操作：
 
-- 定义名为 ``cma_tym`` 的工作流 (suite)
-- 为 suite 定义多个变量 (variable)，包括目录、模式配置、运行日期和时次等
-- 定义名为 ``copy_dir`` 的任务 (task)
-- 将工作流定义写入到文件 cma_tym.def 中
+- 15 行：定义名为 ``cma_tym`` 的工作流 (suite)
+- 16-29 行：为 suite 定义多个变量 (variable)，包括目录、模式配置、运行日期和时次等
+- 31-32 行：定义名为 ``copy_dir`` 的任务 (task)
+- 35-36 行：将工作流定义写入到文件 **cma_tym.def** 中
 
 生成 def 文件
 -------------
@@ -68,7 +69,7 @@
     cd ${TUTORIAL_HOME}/def
     python cma_tym.py
 
-**cma_tym.def** 文件内容如下：
+**cma_tym.def** 文件是纯文本格式描述的工作流定义，文件内容如下：
 
 .. code-block::
 

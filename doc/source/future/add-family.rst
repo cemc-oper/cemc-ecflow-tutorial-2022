@@ -1,23 +1,17 @@
 添加 Family
 =============
 
-接下来添加一组处理 NCEP 数据的任务，为 CMA-TYM 生成背景场数据。
-下面将创建 Family 节点 get_ncep，0 - 120 小时每 3 小时创建一个数据处理任务。
+接下来添加一组处理 NCEP GFS 预报数据的任务，为 CMA-TYM 生成背景场数据。
+下面将创建 Family 节点 get_ncep，为 0 到 120 小时每隔 3 小时创建一个数据预处理任务。
 
 修改工作流定义
 --------------
 
 更新 ``${TUTORIAL_HOME}/def`` 中的工作流定义文件 **cma_tym.py**：
 
-.. code-block:: bash
-
-    cd ${TUTORIAL_HOME}/def
-
-**cma_tym.py** 修改后的内容为：
-
 .. code-block:: py
     :linenos:
-    :emphasize-lines: 39-40,51-61
+    :emphasize-lines: 40-41,52-62
 
     import os
 
@@ -87,14 +81,15 @@
     def_output_path = str(os.path.join(def_path, "cma_tym.def"))
     defs.save_as_defs(def_output_path)
 
-39-40 行创建一个 Limit，并将该 Limit 应用到 cma_tym 节点上，限制同时运行的任务不能超过 10 个。
+40-41 行创建一个 Limit，并将该 Limit 应用到 cma_tym 节点上，限制同时运行的任务不能超过 10 个。
 
 .. note::
 
     对于需要运行大量任务的工作流，一定要限制同时运行的任务数，避免同一时间大量提交作业导致 ecFlow 服务卡死。
 
-51-61 行创建 Famliy 节点 *get_ncep*，逐三小时创建以三位时效数字作为名称的任务。
-任务通过 ``ECF_SCRIPT_CMD`` 变量指明任务对应的 ecf 脚本，ecFlow 会将 ``ECF_SCRIPT_CMD`` 命令的输出作为该任务的 ecf 脚本。
+52-62 行创建 Family 节点 get_ncep，逐三小时创建以三位时效数字作为名称的任务。
+
+任务通过 ``ECF_SCRIPT_CMD`` 变量设置任务对应的 ecf 脚本，ecFlow 会将 ``ECF_SCRIPT_CMD`` 命令的输出作为该任务的 ecf 脚本。
 
 更新工作流
 -----------
@@ -119,12 +114,6 @@
 ------------
 
 在 ``${TUTORIAL_HOME}/def/ecffiles`` 目录下创建 ecf 脚本 **getgmf_ncep.ecf**：
-
-.. code-block:: bash
-
-    cd ${TUTORIAL_HOME}/def/ecffiles
-
-**getgmf_ncep.ecf** 脚本内容：
 
 .. code-block:: bash
 
@@ -204,7 +193,7 @@
     #---------------------------------------
     %include <tail.h>
 
-该脚本从当前预报时次的 NCEP GFS GRIB2 产品中提取背景场信息，生成 bckg_YYYYMMDDHH 文件，存放到 bckg 目录中。
+该脚本从当前预报时次的 NCEP GFS GRIB2 数据文件中提取背景场信息，生成 ``bckg_YYYYMMDDHH`` 文件，存放到 bckg 目录中。
 
 
 运行任务

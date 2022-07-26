@@ -13,7 +13,7 @@
 
 .. code-block:: bash
     :linenos:
-    :emphasize-lines: 71-73
+    :emphasize-lines: 72-74
 
     import os
 
@@ -96,7 +96,7 @@
     defs.save_as_defs(def_output_path)
 
 
-71-73 行添加 dobugs 任务，使用串行队列 serial 运行。
+72-74 行添加 dobugs 任务，使用串行队列 serial 运行。
 
 挂起 cma_tym 节点，更新 ecFlow 上的工作流：
 

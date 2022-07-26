@@ -12,15 +12,9 @@
 
 更新 ``${TUTORIAL_HOME}/def`` 中的工作流定义文件 **cma_tym.py**：
 
-.. code-block:: bash
-
-    cd ${TUTORIAL_HOME}/def
-
-**cma_tym.py** 修改后的内容为：
-
 .. code-block::
     :linenos:
-    :emphasize-lines: 6-12,42-44
+    :emphasize-lines: 6-12,43-47
 
     import os
 
@@ -80,7 +74,7 @@
     - ``ECF_JOB_CMD``：提交作业脚本的命令
     - ``ECF_KILL_CMD``：终止作业脚本运行的命令
     - ``CLASS``：队列名，会在 include 头文件中使用
-* 42-46 行：定义一个新任务 get_message，设置触发条件，copy_dir 任务结束后才开始运行，同时还设置了两个事件
+* 43-47 行：定义一个新任务 get_message，设置触发条件，copy_dir 任务结束后才开始运行，同时还设置了两个事件
     - ``arrived`` 表示有台风
     - ``peaceful`` 表示没有台风
 
@@ -165,13 +159,7 @@ ecFlowUI 中也可以直接看到我们为 get_message 添加的触发器。
 
 为使用串行队列的任务创建一个头文件，包含提交串行作业需要的 Slurm 指令。
 
-在 ${TUTORIAL_HOME}/def/include 中创建头文件 **slurm_serial.h**：
-
-.. code-block:: bash
-
-    cd ${TUTORIAL_HOME}/def/include
-
-**slurm_serial.h** 内容：
+在 ``${TUTORIAL_HOME}/def/include`` 中创建头文件 **slurm_serial.h**：
 
 .. code-block:: bash
 
@@ -185,18 +173,10 @@ ecFlowUI 中也可以直接看到我们为 get_message 添加的触发器。
     #SBATCH --no-requeue
 
 
-
-
 创建任务脚本
 ------------
 
-在 ${TUTORIAL_HOME}/def/ecffiles 中创建 ecf 脚本 **get_message.ecf**：
-
-.. code-block:: bash
-
-    cd ${TUTORIAL_HOME}/def/ecffiles
-
-**get_message.ecf** 脚本内容：
+在 ``${TUTORIAL_HOME}/def/ecffiles`` 中创建 ecf 脚本 **get_message.ecf**：
 
 .. code-block:: bash
 
@@ -226,7 +206,8 @@ ecFlowUI 中也可以直接看到我们为 get_message 添加的触发器。
 
 .. note::
 
-    上述脚本中 ``cp -r ...`` 拷贝台风报文的执行速度比较慢，建议仅在第一次执行时进行拷贝，后续执行前将改行注释掉以节省任务运行时间。
+    上述脚本将 CMA-TYM 业务系统的台风报文目录链接到运行目录，模拟台风报文检索过程。
+    实际业务系统会从天擎和 NMC 台风数据库检索台风报文，并进行预处理。
 
 在 ecFlowUI 上查看运行结果：
 

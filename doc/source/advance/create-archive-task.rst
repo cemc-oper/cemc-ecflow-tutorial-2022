@@ -171,7 +171,7 @@
 创建任务脚本
 -----------------------
 
-教程仅模拟归档过程，archive 任务不执行任何操作。
+本教程仅模拟归档过程，archive 任务不执行任何操作。
 
 在 ``${TUTORIAL_HOME}/def/ecffiles`` 中创建 ecf 脚本 **archive.ecf**：
 
