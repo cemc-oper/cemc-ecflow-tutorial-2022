@@ -7,7 +7,7 @@ copy_dir 任务用于将运行模式需要的静态文件拷贝到运行目录�
 编写 ecf 文件
 --------------
 
-在 ${TUTORIAL_HOME}/def/ecffiles 目录中为 copy_dir 任务创建 ecf 脚本 **copy_dir.ecf**：
+在 ``${TUTORIAL_HOME}/def/ecffiles`` 目录中为 copy_dir 任务创建 ecf 脚本 **copy_dir.ecf**：
 
 .. code-block:: bash
 

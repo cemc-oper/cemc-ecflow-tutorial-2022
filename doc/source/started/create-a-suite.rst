@@ -8,10 +8,6 @@
 
 在 ``${TUTORIAL_HOME}/def`` 目录中创建文件 **cma_tym.py**：
 
-.. code-block:: bash
-
-    cd ${TUTORIAL_HOME}/def
-
 .. code-block:: py
     :linenos:
 
